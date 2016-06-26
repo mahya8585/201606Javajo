@@ -2,6 +2,8 @@ package jp.javajo.domain.model;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * Created by user on 2016/06/24.
  */
@@ -9,5 +11,5 @@ import lombok.Data;
 public class Weather {
 
     String title;
-    Description description;
+    List<Forecasts> forecasts;
 }

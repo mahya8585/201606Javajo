@@ -1,19 +1,21 @@
 package jp.javajo.controller;
 
+import jp.javajo.domain.model.Forecasts;
 import jp.javajo.domain.model.Weather;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 /**
  * 接続テストクラス
  * Created by maaya
  */
-@RestController
+@Controller
 @RequestMapping("/weather")
 public class WeatherController {
     private static final Logger logger = LoggerFactory.getLogger(WeatherController.class);
@@ -29,7 +31,7 @@ public class WeatherController {
      * 天気情報返却
      */
     @RequestMapping(method = RequestMethod.GET)
-    String weather(@RequestParam String area) {
+    String weather(@RequestParam String area, Model model) {
         logger.debug("天気メソッド");
 
         Weather weather;
@@ -38,13 +40,17 @@ public class WeatherController {
         } else if (area.equals("osaka")) {
             weather = rt.getForObject(osakaUrl, Weather.class);
         } else {
-            return "その地域には対応してません★「tokyo」か「osaka」をパラメータに渡してね";
+            return "fail";
         }
 
-        //リクエスト送信
-        String weatherInfo = "【" + weather.getTitle() + "】：" + weather.getDescription().getText();
+        //天気情報表示
+        model.addAttribute("area", weather.getTitle());
+        Forecasts forecast = weather.getForecasts().get(0);
+        model.addAttribute("dateLabel", forecast.getDateLabel());
+        model.addAttribute("telop", forecast.getTelop());
+        model.addAttribute("image", forecast.getImage().getUrl());
 
-        return weatherInfo;
+        return "weather";
     }
 
 }
