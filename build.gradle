@@ -19,6 +19,13 @@ buildscript {
     }
 }
 
+jar {
+    baseName = 'weatherApi'
+    manifest {
+        attributes 'Main-Class': 'jp.javajo'
+    }
+}
+
 war {
     baseName = 'javajo'
     manifest {
